@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>紹介文メーカー | ROOM & Threads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2b2620;
+    --paper:#FBF6F0;
+    --card:#FFFFFF;
+    --accent:#E4694F;      /* テラコッタ寄りだが少し濁したレンガ色 */
+    --accent-soft:#F4DCD3;
+    --mint:#4E8A82;         /* サブアクセント：くすみミント */
+    --mint-soft:#DCEBE6;
+    --line:#E7DFD5;
+    --muted:#8A7F72;
+    --radius:18px;
+    --shadow: 0 10px 30px rgba(43,38,32,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(228,105,79,0.08), transparent 60%),
+      radial-gradient(1000px 500px at 100% 0%, rgba(78,138,130,0.08), transparent 55%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    line-height:1.7;
+    min-height:100vh;
+    padding:0 0 80px;
+  }
+  .wrap{max-width:840px;margin:0 auto;padding:0 20px;}
+
+  header{padding:52px 0 30px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12.5px;letter-spacing:.14em;font-weight:700;color:var(--accent);
+    background:var(--accent-soft);
+    padding:6px 14px;border-radius:999px;
+    margin-bottom:18px;
+  }
+  h1{
+    font-family:'Zen Maru Gothic', sans-serif;
+    font-weight:900;
+    font-size:clamp(28px,5vw,40px);
+    margin:0 0 12px;
+    letter-spacing:.01em;
+  }
+  h1 span{color:var(--accent);}
+  .lede{color:var(--muted);font-size:15px;max-width:56ch;margin:0;}
+
+  .notice{
+    margin-top:26px;
+    background:var(--mint-soft);
+    border:1px solid rgba(78,138,130,0.25);
+    border-radius:14px;
+    padding:16px 18px;
+    font-size:13.5px;
+    color:#2f4a45;
+  }
+  .notice b{color:var(--mint);}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:28px;
+    margin-top:26px;
+  }
+  .card h2{
+    font-family:'Zen Maru Gothic', sans-serif;
+    font-size:17px;
+    margin:0 0 18px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .num{
+    width:26px;height:26px;border-radius:50%;
+    background:var(--accent);color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:12.5px;font-weight:700;flex:none;
+  }
+
+  label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin:16px 0 6px;}
+  label:first-of-type{margin-top:0;}
+  input[type=text], textarea, select{
+    width:100%;
+    border:1px solid var(--line);
+    background:#FCFAF7;
+    border-radius:10px;
+    padding:12px 14px;
+    font-family:inherit;
+    font-size:14.5px;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s;
+  }
+  input[type=text]:focus, textarea:focus, select:focus{border-color:var(--accent);background:#fff;}
+  textarea{resize:vertical;min-height:70px;}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:560px){.row{grid-template-columns:1fr;}}
+
+  .toggles{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .chip{
+    border:1px solid var(--line);background:#fff;border-radius:999px;
+    padding:8px 14px;font-size:13px;cursor:pointer;user-select:none;
+    transition:all .15s;
+  }
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  .btn{
+    appearance:none;border:none;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:14.5px;
+    border-radius:999px;padding:13px 26px;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:transform .12s, box-shadow .12s;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--ink);color:#fff;width:100%;justify-content:center;margin-top:22px;padding:15px;font-size:15.5px;}
+  .btn-primary:hover{box-shadow:0 8px 20px rgba(43,38,32,0.25);}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--ink);}
+  .btn-mint{background:var(--mint);color:#fff;}
+  .btn-accent{background:var(--accent);color:#fff;}
+
+  #results{margin-top:34px;}
+  .result-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 14px;}
+  .result-head h2{margin:0;}
+  .badge{font-size:12px;color:var(--muted);}
+
+  .pattern{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:22px;
+    margin-bottom:16px;
+    box-shadow:var(--shadow);
+  }
+  .pattern-tag{
+    display:inline-block;font-size:11.5px;font-weight:700;color:var(--accent);
+    background:var(--accent-soft);padding:4px 10px;border-radius:999px;margin-bottom:12px;
+  }
+  .pattern textarea{min-height:110px;font-size:14.5px;}
+  .tags{margin-top:10px;font-size:13.5px;color:var(--mint);font-weight:700;}
+  .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  .actions .btn{padding:9px 16px;font-size:13px;}
+
+  .copied-flash{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);
+    background:var(--ink);color:#fff;padding:11px 20px;border-radius:999px;
+    font-size:13.5px;opacity:0;pointer-events:none;transition:all .25s;
+  }
+  .copied-flash.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  footer{margin-top:40px;text-align:center;color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">● ROOM & Threads 投稿サポート</span>
+    <h1>紹介文<span>メーカー</span></h1>
+    <p class="lede">商品情報を入れるだけで、保存されやすい紹介文を3パターン＋ハッシュタグ付きで自動生成。ThreadsはワンクリックでOK、ROOMはコピペで最後だけ手動投稿します。</p>
+    <div class="notice">
+      <b>運用方法：</b>ROOMへは、楽天の購入履歴ページにある公式の投稿リンクから行ってください（このアプリでは生成した文章を「コピー」して貼り付けるだけでOKです）。Threadsは公式の投稿画面を直接開ける機能で、ワンクリックで下書き状態まで自動化します。
+    </div>
+  </header>
+
+  <div class="card">
+    <h2><span class="num">0</span>購入履歴から選ぶ（任意）</h2>
+    <p class="lede" style="margin-bottom:14px;">
+      自動取得はできません（楽天に購入履歴APIが無いため）。<br>
+      ご自身で楽天にログインし、<a href="https://order.my.rakuten.co.jp/" target="_blank" rel="noopener">購入履歴ページ</a>を開いて商品名が並んだ部分をコピーし、下に貼り付けてください。候補を抽出してワンクリックで商品名欄に入力できます。
+    </p>
+    <label>購入履歴からコピーしたテキスト</label>
+    <textarea id="historyPaste" placeholder="購入履歴ページの商品名部分をそのままコピペしてください"></textarea>
+    <button class="btn btn-ghost" style="margin-top:12px;" onclick="parseHistory()">候補を抽出する</button>
+    <div class="toggles" id="historyCandidates" style="margin-top:14px;"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">½</span>商品ページのリンクからキャッチコピー・タグを提案</h2>
+    <p class="lede" style="margin-bottom:14px;">
+      URLだけではリンク先の中身までは読み込めません（外部サイトのHTML取得はブラウザのセキュリティ制限で失敗します）。そこで2つの方法を用意しました。
+    </p>
+
+    <label>① 楽天APIアプリID（無料発行・任意）</label>
+    <input type="text" id="rakutenAppId" placeholder="お持ちの場合は入力（未入力なら②を使ってください）">
+    <p class="badge" style="margin:6px 0 0;">
+      未取得の場合は <a href="https://webservice.rakuten.co.jp/app/create" target="_blank" rel="noopener">楽天ウェブサービス</a> で無料発行できます。アプリIDはこのページ内だけで使われ、保存はされません。
+    </p>
+
+    <label>商品ページURL</label>
+    <input type="text" id="itemPageUrl" placeholder="https://item.rakuten.co.jp/ショップ名/商品コード/">
+    <button class="btn btn-ghost" style="margin-top:12px;" onclick="fetchFromUrl()">①のAPIで取得を試す</button>
+    <div id="urlFetchStatus" class="badge" style="margin-top:10px;"></div>
+
+    <label style="margin-top:26px;">② うまく取得できない場合：商品説明文を貼り付け</label>
+    <textarea id="descPaste" placeholder="商品ページの説明文・特徴が書かれた部分をコピペしてください"></textarea>
+    <button class="btn btn-ghost" style="margin-top:12px;" onclick="suggestFromDescription()">②の貼り付けから提案を作る</button>
+
+    <div id="suggestOutput" style="margin-top:18px;"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span>商品情報を入力</h2>
+
+    <label>商品名</label>
+    <input type="text" id="itemName" placeholder="例）折りたたみ ベビーバス 新生児用">
+
+    <label>特徴・キャッチコピー（1〜2個、読点区切りでOK）</label>
+    <textarea id="itemFeature" placeholder="例）片手で持てる軽さ、収納時コンパクト、新生児から使える"></textarea>
+
+    <div class="row">
+      <div>
+        <label>ジャンル</label>
+        <select id="genre">
+          <option>子育て・ベビー用品</option>
+          <option>ファッション</option>
+          <option>インテリア・雑貨</option>
+          <option>コスメ・美容</option>
+          <option>キッチン・生活家電</option>
+          <option>その他</option>
+        </select>
+      </div>
+      <div>
+        <label>商品URL（アフィリエイトリンクでOK）</label>
+        <input type="text" id="itemUrl" placeholder="https://a.r10.to/xxxxxx">
+      </div>
+    </div>
+
+    <label>付けたいハッシュタグ（自動提案に追加、カンマ区切り・任意）</label>
+    <input type="text" id="customTags" placeholder="例）出産祝い,育児グッズ">
+
+    <label>文体パターン（3つ選ぶ／未選択ならおまかせで3つ自動選択）</label>
+    <div class="toggles" id="styleToggles"></div>
+
+    <button class="btn btn-primary" onclick="generate()">紹介文を3パターン作る</button>
+  </div>
+
+  <div id="results"></div>
+
+  <footer>※ 生成される文章はテンプレートによる自動作成です。投稿前に事実と異なる表現がないか必ずご自身で確認してください。</footer>
+</div>
+
+<div class="copied-flash" id="flash">コピーしました</div>
+
+<script>
+const STYLES = [
+  {key:'declare', label:'言い切り型', build:(n,f)=>`${n}。${f}。これくらい頼れるアイテムはなかなかない。`},
+  {key:'question', label:'質問型', build:(n,f)=>`${f}、悩んでませんか？${n}に変えてから、その悩みがかなり減った。`},
+  {key:'before', label:'ビフォーアフター型', build:(n,f)=>`${n}を使う前と後で、${f.split('、')[0]}が別物になった。`},
+  {key:'number', label:'具体性訴求型', build:(n,f)=>`${n}、${f}。数字で見ても違いがはっきり分かるくらい満足度が高い。`},
+  {key:'honne', label:'ぼやき・本音型', build:(n,f)=>`${f}に困ってた頃、${n}に出会いたかった…！`},
+  {key:'ranking', label:'ランキング型', build:(n,f)=>`いろいろ試した結果、${f}の面では${n}が断トツだった。`},
+  {key:'scene', label:'シーン提示型', build:(n,f)=>`${n}のおかげで、${f}な毎日がぐっとラクになった。`},
+  {key:'short', label:'体言止め型', build:(n,f)=>`${n}。${f}。これはリピート確定。`},
+  {key:'story', label:'体験談型', build:(n,f)=>`${n}を使い始めて、${f}を実感するまでにそう時間はかからなかった。`},
+  {key:'discover', label:'気づき型', build:(n,f)=>`${f}、${n}に変えただけでこんなに変わるとは思わなかった。`},
+];
+
+function parseHistory(){
+  const raw = document.getElementById('historyPaste').value;
+  const lines = raw.split(/\n+/)
+    .map(l=>l.trim())
+    .filter(l=>l.length >= 8 && l.length <= 70)
+    .filter(l=>!/^[¥￥]?[\d,]+円?$/.test(l))
+    .filter(l=>!/^(注文日|注文番号|配送状況|数量|小計|合計|お届け予定|レビュー|再購入|キャンセル)/.test(l));
+  const uniq = [...new Set(lines)].slice(0, 20);
+  const wrap = document.getElementById('historyCandidates');
+  wrap.innerHTML = '';
+  if(uniq.length === 0){
+    wrap.innerHTML = '<span class="badge">候補が見つかりませんでした。商品名の行を含めて貼り付けてください。</span>';
+    return;
+  }
+  uniq.forEach(text=>{
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = text.length > 40 ? text.slice(0,40)+'…' : text;
+    chip.title = text;
+    chip.onclick = ()=>{
+      document.getElementById('itemName').value = text;
+      document.getElementById('itemName').scrollIntoView({behavior:'smooth', block:'center'});
+      flash('商品名欄に入力しました');
+    };
+    wrap.appendChild(chip);
+  });
+}
+
+const STOPWORDS = new Set(['こと','もの','ため','これ','それ','あれ','です','ます','ください','こちら','とき','よう','など','場合','商品','送料','無料','対応','使用','可能','以上','以下','税込','ポイント']);
+
+function extractPhrases(text){
+  const parts = text.split(/[、。・\/\n\r,，\(\)（）【】\[\]｜\|]+/)
+    .map(p=>p.trim())
+    .filter(p=>p.length >= 2 && p.length <= 16)
+    .filter(p=>!/^\d+$/.test(p))
+    .filter(p=>!STOPWORDS.has(p));
+  return [...new Set(parts)];
+}
+
+function renderSuggestions(name, phrases){
+  const top = phrases.slice(0, 6);
+  const catchcopies = [
+    top[0] ? `${top[0]}が叶う、${name || 'これ'}。` : `${name || 'これ'}、使ってわかる違い。`,
+    top[1] ? `${name || 'これ'}｜${top[1]}で毎日をアップデート` : `気づけばリピート確定の${name || '一品'}。`,
+    top[0] && top[2] ? `${top[0]}も${top[2]}も、これ1つで解決。` : `${name || 'これ'}が地味に手放せない。`,
+  ];
+  const tags = [...new Set([...top].map(t=>'#'+t.replace(/\s/g,'')))].slice(0,3);
+  if(tags.length < 3) tags.push('#買ってよかった');
+
+  const out = document.getElementById('suggestOutput');
+  out.innerHTML = `
+    <label>キャッチコピー案</label>
+    ${catchcopies.map((c,i)=>`
+      <div class="pattern" style="padding:16px;margin-bottom:10px;">
+        <textarea style="min-height:50px;" id="cc-${i}">${c}</textarea>
+        <div class="actions"><button class="btn btn-ghost" onclick="copyCc(${i})">📋 コピー</button>
+        <button class="btn btn-accent" onclick="useAsFeature(${i})">①の特徴欄に入れる</button></div>
+      </div>
+    `).join('')}
+    <label>タグ案</label>
+    <div class="tags">${tags.join(' ')}</div>
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="useTags('${tags.join(',').replace(/'/g,"")}')">タグ欄に入れる</button>
+    </div>
+  `;
+}
+window.copyCc = (i)=>{
+  navigator.clipboard.writeText(document.getElementById(`cc-${i}`).value).then(()=>flash('コピーしました'));
+};
+window.useAsFeature = (i)=>{
+  document.getElementById('itemFeature').value = document.getElementById(`cc-${i}`).value;
+  flash('特徴欄に入力しました');
+};
+window.useTags = (joined)=>{
+  document.getElementById('customTags').value = joined.split(',').map(t=>t.replace('#','')).join(',');
+  flash('タグ欄に入力しました');
+};
+
+function suggestFromDescription(){
+  const text = document.getElementById('descPaste').value.trim();
+  if(!text){ flash('説明文を貼り付けてください'); return; }
+  const name = document.getElementById('itemName').value.trim();
+  renderSuggestions(name, extractPhrases(text));
+}
+
+async function fetchFromUrl(){
+  const statusEl = document.getElementById('urlFetchStatus');
+  const appId = document.getElementById('rakutenAppId').value.trim();
+  const url = document.getElementById('itemPageUrl').value.trim();
+  if(!appId){ statusEl.textContent = 'アプリIDが未入力です。②の貼り付け方式をお使いください。'; return; }
+  const m = url.match(/item\.rakuten\.co\.jp\/([^\/]+)\/([^\/\?]+)/);
+  if(!m){ statusEl.textContent = 'URLの形式を認識できませんでした（item.rakuten.co.jp/ショップ名/商品コード/ の形式が必要）。②をお使いください。'; return; }
+  const [_, shopCode, itemCode] = m;
+  statusEl.textContent = '取得中...';
+  try{
+    const endpoint = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&applicationId=${encodeURIComponent(appId)}&itemCode=${encodeURIComponent(shopCode+':'+itemCode)}`;
+    const res = await fetch(endpoint);
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const item = data?.Items?.[0]?.Item;
+    if(!item){ statusEl.textContent = '該当商品が見つかりませんでした。②をお使いください。'; return; }
+    document.getElementById('itemName').value = item.itemName || '';
+    if(item.itemUrl) document.getElementById('itemUrl').value = item.itemUrl;
+    statusEl.textContent = '取得成功！商品名を反映しました。下で提案も生成します。';
+    const sourceText = [item.catchcopy, item.itemCaption].filter(Boolean).join('、');
+    renderSuggestions(item.itemName, extractPhrases(sourceText));
+  }catch(e){
+    statusEl.textContent = '取得に失敗しました（CORSまたはRefererの制限の可能性）。お手数ですが②の貼り付け方式をお使いください。';
+  }
+}
+
+const toggleWrap = document.getElementById('styleToggles');
+STYLES.forEach(s=>{
+  const el = document.createElement('div');
+  el.className='chip';
+  el.textContent=s.label;
+  el.dataset.key=s.key;
+  el.onclick=()=>el.classList.toggle('on');
+  toggleWrap.appendChild(el);
+});
+
+function pickStyles(){
+  const chosen = [...toggleWrap.querySelectorAll('.chip.on')].map(c=>c.dataset.key);
+  let keys = chosen.length ? chosen : [];
+  if(keys.length < 3){
+    const rest = STYLES.map(s=>s.key).filter(k=>!keys.includes(k));
+    while(keys.length < 3 && rest.length){
+      const i = Math.floor(Math.random()*rest.length);
+      keys.push(rest.splice(i,1)[0]);
+    }
+  }
+  return keys.slice(0,3).map(k=>STYLES.find(s=>s.key===k));
+}
+
+function genreTag(genre){
+  const map = {
+    '子育て・ベビー用品':'#育児グッズ',
+    'ファッション':'#プチプラコーデ',
+    'インテリア・雑貨':'#暮らしを整える',
+    'コスメ・美容':'#美容好きさんと繋がりたい',
+    'キッチン・生活家電':'#時短家電',
+    'その他':'#楽天で買ったもの',
+  };
+  return map[genre] || '#楽天で買ったもの';
+}
+
+function buildTags(genre, name, custom){
+  const base = ['#楽天ROOM', genreTag(genre)];
+  const nameTag = '#' + name.replace(/[\s　、。・]/g,'').slice(0,10);
+  base.push(nameTag || '#購入品');
+  const customList = custom.split(',').map(t=>t.trim()).filter(Boolean).map(t=>t.startsWith('#')?t:'#'+t);
+  return [...base, ...customList].slice(0,5);
+}
+
+function generate(){
+  const name = document.getElementById('itemName').value.trim() || 'この商品';
+  const feature = document.getElementById('itemFeature').value.trim() || '使い心地の良さ';
+  const genre = document.getElementById('genre').value;
+  const url = document.getElementById('itemUrl').value.trim();
+  const customTags = document.getElementById('customTags').value.trim();
+
+  const styles = pickStyles();
+  const tags = buildTags(genre, name, customTags);
+  const tagLine = tags.join(' ');
+
+  const resultsEl = document.getElementById('results');
+  resultsEl.innerHTML = `
+    <div class="result-head">
+      <h2>生成された紹介文</h2>
+      <span class="badge">${styles.map(s=>s.label).join(' / ')}</span>
+    </div>
+  `;
+
+  styles.forEach((s, idx)=>{
+    const text = s.build(name, feature);
+    const full = text + '\n' + tagLine;
+    const box = document.createElement('div');
+    box.className = 'pattern';
+    box.innerHTML = `
+      <span class="pattern-tag">${s.label}</span>
+      <textarea id="text-${idx}">${text}</textarea>
+      <div class="tags">${tagLine}</div>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="copyText(${idx})">📋 コピー（ROOMの投稿画面に貼り付け用）</button>
+        <button class="btn btn-accent" onclick="openThreads(${idx}, ${JSON.stringify(url)})">🧵 Threadsで投稿</button>
+      </div>
+    `;
+    resultsEl.appendChild(box);
+  });
+
+  resultsEl.scrollIntoView({behavior:'smooth', block:'start'});
+
+  function copyText(i){
+    const t = document.getElementById(`text-${i}`).value + '\n' + tagLine;
+    navigator.clipboard.writeText(t).then(()=>flash('コピーしました'));
+  }
+  window.copyText = copyText;
+
+  window.openThreads = (i, url)=>{
+    const t = document.getElementById(`text-${i}`).value + '\n' + tagLine + (url ? '\n'+url : '');
+    const intent = 'https://www.threads.net/intent/post?text=' + encodeURIComponent(t);
+    window.open(intent, '_blank');
+  };
+}
+
+function flash(msg){
+  const el = document.getElementById('flash');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window._flashTimer);
+  window._flashTimer = setTimeout(()=>el.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
