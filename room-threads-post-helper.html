@@ -360,8 +360,12 @@ async function fetchFromUrl(){
   try{
     const endpoint = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260401?format=json&applicationId=${encodeURIComponent(appId)}&itemCode=${encodeURIComponent(shopCode+':'+itemCode)}`;
     const res = await fetch(endpoint);
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
+    const bodyText = await res.text();
+    if(!res.ok){
+      statusEl.innerHTML = `取得失敗（HTTP ${res.status}）。詳細：<br><code style="font-size:11.5px;word-break:break-all;">${bodyText.slice(0,300)}</code>`;
+      return;
+    }
+    const data = JSON.parse(bodyText);
     const item = data?.Items?.[0]?.Item;
     if(!item){ statusEl.textContent = '該当商品が見つかりませんでした。②をお使いください。'; return; }
     document.getElementById('itemName').value = item.itemName || '';
@@ -370,7 +374,7 @@ async function fetchFromUrl(){
     const sourceText = [item.catchcopy, item.itemCaption].filter(Boolean).join('、');
     renderSuggestions(item.itemName, extractPhrases(sourceText));
   }catch(e){
-    statusEl.textContent = '取得に失敗しました（CORSまたはRefererの制限の可能性）。お手数ですが②の貼り付け方式をお使いください。';
+    statusEl.innerHTML = `取得に失敗しました（ネットワークエラー：${e.message}）。ブラウザの開発者ツール（F12）→Networkタブでも詳細を確認できます。②の貼り付け方式もお使いください。`;
   }
 }
 
